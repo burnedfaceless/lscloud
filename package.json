@@ -20,6 +20,7 @@
   "dependencies": {
     "@types/yargs": "^17.0.0",
     "got": "^11.8.2",
+    "prettyjson": "^1.2.1",
     "yargs": "^17.0.1"
   }
 }
