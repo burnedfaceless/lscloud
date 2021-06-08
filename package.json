@@ -1,0 +1,25 @@
+{
+  "name": "lscloud",
+  "version": "1.0.0",
+  "description": "A CLI to interact with the LiftStation.cloud API",
+  "main": "cli.js",
+  "scripts": {
+    "test": "node cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/consolidatedutilities/lscloud.git"
+  },
+  "author": "Consolidated Utilities, Inc.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/consolidatedutilities/lscloud/issues"
+  },
+  "homepage": "https://github.com/consolidatedutilities/lscloud#readme",
+  "bin": "cli.js",
+  "dependencies": {
+    "@types/yargs": "^17.0.0",
+    "got": "^11.8.2",
+    "yargs": "^17.0.1"
+  }
+}
