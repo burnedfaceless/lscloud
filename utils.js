@@ -38,6 +38,14 @@ const writeApiCredentials = (apiKey, apiSecret) => {
   }
 }
 
+const deleteCredentials = async() => {
+  try {
+    fs.unlinkSync(__dirname + '/.credentials.json')
+  } catch(e) {
+    console.log(e)
+  }
+}
+
 const getWells = async(credentials) => {
   try {
     const response = await got(`https://api.liftstation.cloud/v1/wells?api_key=${credentials.api_key}&api_secret=${credentials.api_secret}`)
@@ -46,7 +54,10 @@ const getWells = async(credentials) => {
     }
     console.log(prettyjson.render(JSON.parse(response.body), options))
   } catch(e) {
-    console.log(e)
+    if (e.message === 'Response code 401 (Unauthorized)') {
+      await deleteCredentials()
+      console.log('Invalid credentials \nRun lscloud config --help')
+    }
   }
 }
 
