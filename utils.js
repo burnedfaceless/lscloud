@@ -2,8 +2,9 @@
 const fs = require('fs')
 
 // npm modules
-const got = require('got')
 const prettyjson = require('prettyjson')
+const axios = require('axios')
+const dateformat = require('dateformat')
 
 const readCredentialsFile = () => {
   return fs.readFileSync(__dirname + '/.credentials.json', 'utf8')
@@ -48,22 +49,53 @@ const deleteCredentials = async() => {
 
 const getWells = async(credentials) => {
   try {
-    const response = await got(`https://api.liftstation.cloud/v1/wells?api_key=${credentials.api_key}&api_secret=${credentials.api_secret}`)
+    const response = await axios.get('https://api.liftstation.cloud/v1/wells', {
+      params: {
+        api_key: credentials.api_key,
+        api_secret: credentials.api_secret
+      }
+    })
     const options = {
       noColor: false
     }
-    console.log(prettyjson.render(JSON.parse(response.body), options))
+    console.log(prettyjson.render(response.data, options))
   } catch(e) {
-    if (e.message === 'Response code 401 (Unauthorized)') {
+    if (e.response.status === 401) {
       await deleteCredentials()
       console.log('Invalid credentials \nRun lscloud config --help')
     }
   }
 }
 
+const pushWellReading = async(credentials, wellObj) => {
+  try {
+    const response = await axios.post('https://api.liftstation.cloud/v1/wells', {
+      pump: wellObj.pump,
+      residual: wellObj.residual,
+      wellId: wellObj.id,
+      date: wellObj.date
+    }, {
+      api_key: credentials.api_key,
+      api_secret: credentials.api_secret
+    })
+  } catch(e) {
+    if (e.response.status === 401) {
+      await deleteCredentials()
+      console.log('Invalid credentials \nRun lscloud config --help')
+    }
+  }
+}
+
+const getCurrentDate = () => {
+  const now = new Date()
+  return dateformat(now, 'yyyy-mm-dd')
+}
+
 module.exports = {
   checkForApiCredentials,
   writeApiCredentials,
   parseApiCredentials,
-  getWells
+  getWells,
+  pushWellReading,
+  getCurrentDate
 }

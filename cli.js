@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 const yargs = require('yargs')
-const got = require('got')
 
 // Functions
 const {
   checkForApiCredentials,
   writeApiCredentials,
   parseApiCredentials,
-  getWells
+  getWells,
+  getCurrentDate
 } = require('./utils')
 
 yargs.command({
@@ -70,7 +70,12 @@ yargs.command({
   handler(argv) {
     const credentialsExist = checkForApiCredentials()
     if (credentialsExist) {
-      console.log('hello')
+      const wellReading = {}
+      wellReading.id = argv.id
+      wellReading.pump = argv.pump
+      wellReading.date = (argv.date === undefined) ? getCurrentDate() : argv.date
+      wellReading.residual = (argv.residual === undefined) ? null : argv.residual
+      console.log(wellReading)
     }
   }
 })
