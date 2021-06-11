@@ -6,6 +6,11 @@ const prettyjson = require('prettyjson')
 const axios = require('axios')
 const dateformat = require('dateformat')
 
+const getCurrentDate = () => {
+  const now = new Date()
+  return dateformat(now, 'yyyy-mm-dd')
+}
+
 const readCredentialsFile = () => {
   return fs.readFileSync(__dirname + '/.credentials.json', 'utf8')
 }
@@ -67,16 +72,18 @@ const getWells = async(credentials) => {
   }
 }
 
-const pushWellReading = async(credentials, wellObj) => {
+const forceWellReading = async(credentials, wellObj) => {
   try {
-    const response = await axios.post('https://api.liftstation.cloud/v1/wells', {
+    const response = await axios.put('https://api.liftstation.cloud/v1/wells', {
       pump: wellObj.pump,
       residual: wellObj.residual,
       wellId: wellObj.id,
       date: wellObj.date
     }, {
-      api_key: credentials.api_key,
-      api_secret: credentials.api_secret
+      params: {
+        api_key: credentials.api_key,
+        api_secret: credentials.api_secret
+      }
     })
   } catch(e) {
     if (e.response.status === 401) {
@@ -86,10 +93,34 @@ const pushWellReading = async(credentials, wellObj) => {
   }
 }
 
-const getCurrentDate = () => {
-  const now = new Date()
-  return dateformat(now, 'yyyy-mm-dd')
+const pushWellReading = async(credentials, wellObj) => {
+  try {
+    const response = await axios.post('https://api.liftstation.cloud/v1/wells', {
+      pump: wellObj.pump,
+      residual: wellObj.residual,
+      wellId: wellObj.id,
+      date: wellObj.date
+    }, { params: {
+        api_key: credentials.api_key,
+        api_secret: credentials.api_secret
+      }
+    })
+  } catch(e) {
+    if (e.response.status === 401) {
+      await deleteCredentials()
+      console.log('Invalid credentials \nRun lscloud config --help')
+    }
+    if (e.response.status === 409) {
+      if (wellObj.force === true) {
+        forceWellReading(credentials, wellObj)
+      } else {
+        console.log('A reading already exists for this date \nRun with --force=true to force the readings to be entered')
+      }
+    }
+  }
 }
+
+
 
 module.exports = {
   checkForApiCredentials,

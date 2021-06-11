@@ -7,6 +7,7 @@ const {
   writeApiCredentials,
   parseApiCredentials,
   getWells,
+  pushWellReading,
   getCurrentDate
 } = require('./utils')
 
@@ -65,6 +66,11 @@ yargs.command({
       describe: 'Chlorine residual. May be omitted.',
       demandOption: false,
       type: 'string'
+    },
+    force: {
+      describe: 'Force reading to overwrite existing reading for this date and well',
+      demandOption: false,
+      type: 'boolean'
     }
   },
   handler(argv) {
@@ -75,7 +81,9 @@ yargs.command({
       wellReading.pump = argv.pump
       wellReading.date = (argv.date === undefined) ? getCurrentDate() : argv.date
       wellReading.residual = (argv.residual === undefined) ? null : argv.residual
-      console.log(wellReading)
+      wellReading.force = (argv.force === undefined) ? false : argv.force
+      const credentials = parseApiCredentials()
+      pushWellReading(credentials, wellReading)
     }
   }
 })
