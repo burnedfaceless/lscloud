@@ -33,7 +33,7 @@ yargs.command({
 
 yargs.command({
   command: 'get wells',
-  describe: 'Retrieve a list of wells. Used to retrieve the ID of a well to push readings to the cloud.',
+  describe: 'Retrieve the name and id of your organization\'s wells.',
   handler() {
     const credentialsExist = checkForApiCredentials()
     if (credentialsExist) {
