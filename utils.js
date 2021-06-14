@@ -85,6 +85,7 @@ const forceWellReading = async(credentials, wellObj) => {
         api_secret: credentials.api_secret
       }
     })
+    console.log('success')
   } catch(e) {
     if (e.response.status === 401) {
       await deleteCredentials()
@@ -105,6 +106,7 @@ const pushWellReading = async(credentials, wellObj) => {
         api_secret: credentials.api_secret
       }
     })
+    console.log('Success')
   } catch(e) {
     if (e.response.status === 401) {
       await deleteCredentials()
@@ -112,7 +114,7 @@ const pushWellReading = async(credentials, wellObj) => {
     }
     if (e.response.status === 409) {
       if (wellObj.force === true) {
-        forceWellReading(credentials, wellObj)
+        await forceWellReading(credentials, wellObj)
       } else {
         console.log('A reading already exists for this date \nRun with --force=true to force the readings to be entered')
       }

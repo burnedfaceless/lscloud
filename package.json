@@ -1,6 +1,6 @@
 {
   "name": "lscloud",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A CLI to interact with the LiftStation.cloud API",
   "main": "cli.js",
   "scripts": {
