@@ -106,7 +106,7 @@ const pushWellReading = async(credentials, wellObj) => {
         api_secret: credentials.api_secret
       }
     })
-    console.log('Success')
+    console.log('success')
   } catch(e) {
     if (e.response.status === 401) {
       await deleteCredentials()
