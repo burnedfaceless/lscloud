@@ -8,7 +8,10 @@ const {
   parseApiCredentials,
   getWells,
   pushWellReading,
-  getCurrentDate
+  getCurrentDate,
+  validateDate,
+  validateResidual,
+  validatePump
 } = require('./utils')
 
 yargs.command({
@@ -83,7 +86,19 @@ yargs.command({
       wellReading.residual = (argv.residual === undefined) ? null : argv.residual
       wellReading.force = (argv.force === undefined) ? false : argv.force
       const credentials = parseApiCredentials()
-      pushWellReading(credentials, wellReading)
+      if (validateResidual(wellReading.residual) && validatePump(wellReading.pump) && validateDate(wellReading.date)) {
+        pushWellReading(credentials, wellReading)
+      } else {
+        if (!validateDate(wellReading.date)) {
+          console.log('Your date is incorrect')
+        }
+        if (!validatePump(wellReading.pump)) {
+          console.log('Your pump is incorrect')
+        }
+        if (!validateResidual(wellReading.residual)) {
+          console.log('Your residual is incorrect')
+        }
+      }
     }
   }
 })

@@ -122,6 +122,18 @@ const pushWellReading = async(credentials, wellObj) => {
   }
 }
 
+const validatePump = pump => {
+  return /^[0-9]{1,9}$/.test(pump)
+}
+
+const validateResidual = residual => {
+  return (residual === null) ? true : /^[0-9]\.[0-9]$/.test(residual)
+}
+
+const validateDate = date => {
+  return /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(date)
+}
+
 
 
 module.exports = {
@@ -130,5 +142,8 @@ module.exports = {
   parseApiCredentials,
   getWells,
   pushWellReading,
-  getCurrentDate
+  getCurrentDate,
+  validatePump,
+  validateResidual,
+  validateDate
 }
